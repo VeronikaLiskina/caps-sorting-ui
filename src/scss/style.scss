@@ -22,21 +22,20 @@ body {
   flex-direction: column;
   margin: 0 auto;
 
-  /* добавим чуть “воздуха” между блоками внутри */
-  gap: 20px;
+  gap: 10px;
 }
 
 /* контейнер: чуть аккуратнее на больших экранах */
 .container {
   width: 100%;
   margin: 0 auto;
-  padding: 50px 15px;
+  padding: 24px 12px;
 
   /* чтоб не “прилипало” к краям на широких */
   box-sizing: border-box;
 
   @media (max-width: 420px) {
-    padding: 40px 25px;
+    padding: 20px 10px;
   }
 }
 
@@ -60,12 +59,11 @@ body {
 }
 
 @import "./machine-control-page";
-@import "./page-header";
 @import "./machine-controls";
 @import "./machine-status";
 @import "./color-select";
 @import "./machine-blocks";
-@import "./message-log";
+@import "./notifications";
 @import "./machine-scheme";
 @import "./system-info";
-@import "./page-footer";
+@import "./collapse";

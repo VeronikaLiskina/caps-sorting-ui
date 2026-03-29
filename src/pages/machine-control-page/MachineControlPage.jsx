@@ -1,50 +1,88 @@
-import { useState } from "react";
-import PageHeader from "../../components/page-header/PageHeader";
+import { useEffect, useState } from "react";
 import MachineControls from "../../components/machine-controls/MachineControls";
 import MachineStatus from "../../components/machine-status/MachineStatus";
 import ColorSelect from "../../components/color-select/ColorSelect";
 import MachineBlocks from "../../components/machine-blocks/MachineBlocks";
-import MessageLog from "../../components/message-log/MessageLog";
+import Notification from "../../components/notifications/Notifications";
 import { COLORS } from "../../data/colors";
 import { MACHINE_BLOCKS } from "../../data/machineBlocks";
-import { INITIAL_MESSAGES } from "../../data/messages";
 import {
   startMachine,
   stopMachine,
   setMachineColor,
+  getMachineStatus,
 } from "../../api/machineAPI";
 import MachineScheme from "../../components/machine-scheme/MachineScheme";
 import SystemInfo from "../../components/system-info/SystemInfo";
-import PageFooter from "../../components/page-footer/PageFooter";
 
 function MachineControlPage() {
   const [machineStatus, setMachineStatus] = useState("ОСТАНОВЛЕНА");
   const [selectedColor, setSelectedColor] = useState("blue");
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  const [notifications, setNotifications] = useState([]);
 
-  const addMessage = (text) => {
-    setMessages((prev) => [{ id: Date.now(), text }, ...prev]);
+  const addNotification = (text, type = "info") => {
+    const id = Date.now() + Math.random();
+
+    setNotifications((prev) => [{ id, text, type }, ...prev]);
+
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter((item) => item.id !== id));
+    }, 4000);
   };
+
+  const removeNotification = (id) => {
+    setNotifications((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const data = await getMachineStatus();
+
+        setMachineStatus(data?.is_enabled ? "ЗАПУЩЕНА" : "ОСТАНОВЛЕНА");
+
+        if (data?.target_color) {
+          setSelectedColor(data.target_color);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadSettings();
+  }, []);
 
   const handleStartClick = async () => {
     try {
       const data = await startMachine();
-      setMachineStatus("ЗАПУЩЕНА");
-      addMessage(data?.message || "Команда: система запущена");
+
+      setMachineStatus(data?.is_enabled ? "ЗАПУЩЕНА" : "ОСТАНОВЛЕНА");
+
+      if (data?.target_color) {
+        setSelectedColor(data.target_color);
+      }
+
+      addNotification("Система запущена", "success");
     } catch (error) {
       console.error(error);
-      addMessage("Ошибка запуска системы");
+      addNotification(error.message || "Ошибка запуска системы", "error");
     }
   };
 
   const handleStopClick = async () => {
     try {
       const data = await stopMachine();
-      setMachineStatus("ОСТАНОВЛЕНА");
-      addMessage(data?.message || "Команда: система остановлена");
+
+      setMachineStatus(data?.is_enabled ? "ЗАПУЩЕНА" : "ОСТАНОВЛЕНА");
+
+      if (data?.target_color) {
+        setSelectedColor(data.target_color);
+      }
+
+      addNotification("Система остановлена", "info");
     } catch (error) {
       console.error(error);
-      addMessage("Ошибка остановки системы");
+      addNotification(error.message || "Ошибка остановки системы", "error");
     }
   };
 
@@ -53,17 +91,21 @@ function MachineControlPage() {
 
     try {
       const data = await setMachineColor(nextColor);
-      setSelectedColor(nextColor);
+      const updatedColor = data?.target_color ?? nextColor;
 
-      const selectedOption = COLORS.find((color) => color.value === nextColor);
+      setSelectedColor(updatedColor);
 
-      addMessage(
-        data?.message ||
-          `Выбран целевой цвет: ${selectedOption?.label ?? nextColor}`,
+      const selectedOption = COLORS.find(
+        (color) => color.value === updatedColor,
+      );
+
+      addNotification(
+        `Выбран целевой цвет: ${selectedOption?.label ?? updatedColor}`,
+        "info",
       );
     } catch (error) {
       console.error(error);
-      addMessage("Ошибка выбора цвета");
+      addNotification(error.message || "Ошибка выбора цвета", "error");
     }
   };
 
@@ -72,8 +114,6 @@ function MachineControlPage() {
       <main className="content">
         <div className="container">
           <div className="machine-control-page">
-            <PageHeader title="Система управления сортировкой пластиковых крышек" />
-
             <section className="machine-control-page__toolbar">
               <MachineControls
                 onStart={handleStartClick}
@@ -91,16 +131,20 @@ function MachineControlPage() {
                 />
               </div>
             </section>
+
             <section className="machine-control-page__scheme">
               <MachineScheme />
             </section>
+
             <section className="machine-control-page__content">
-              
               <MachineBlocks blocks={MACHINE_BLOCKS} />
-              <MessageLog messages={messages} />
+              <SystemInfo />
             </section>
-            <SystemInfo />
-            <PageFooter />
+
+            <Notification
+              notifications={notifications}
+              onClose={removeNotification}
+            />
           </div>
         </div>
       </main>

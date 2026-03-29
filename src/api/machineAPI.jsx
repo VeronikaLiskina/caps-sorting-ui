@@ -1,52 +1,53 @@
 const BASE_URL = "http://localhost:8000";
 
-export async function startMachine() {
-  const response = await fetch(`${BASE_URL}/start`, {
-    method: "POST",
+async function request(url, options = {}) {
+  const response = await fetch(`${BASE_URL}${url}`, {
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+    ...options,
   });
 
-  if (!response.ok) {
-    throw new Error("Ошибка запуска системы");
+  let data = null;
+
+  try {
+    data = await response.json();
+  } catch {
+    data = null;
   }
 
-  return response;
+  if (!response.ok) {
+    const errorMessage = data?.detail || "Ошибка запроса к серверу";
+    throw new Error(errorMessage);
+  }
+
+  return data;
+}
+
+export async function startMachine() {
+  return request("/start", {
+    method: "POST",
+  });
 }
 
 export async function stopMachine() {
-  const response = await fetch(`${BASE_URL}/stop`, {
+  return request("/stop", {
     method: "POST",
   });
-
-  if (!response.ok) {
-    throw new Error("Ошибка остановки системы");
-  }
-
-  return response;
 }
 
 export async function getMachineStatus() {
-  const response = await fetch(`${BASE_URL}/status`, {
+  return request("/settings", {
     method: "GET",
   });
-
-  if (!response.ok) {
-    throw new Error("Ошибка получения статуса");
-  }
-
-  return response;
 }
+
 export async function setMachineColor(color) {
-  const response = await fetch(`${BASE_URL}/change-color`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ color }),
-  })
-
-  if (!response.ok) {
-    throw new Error('Ошибка отправки цвета')
-  }
-
-  return response.json()
+  return request("/settings", {
+    method: "PUT",
+    body: JSON.stringify({
+      target_color: color,
+    }),
+  });
 }

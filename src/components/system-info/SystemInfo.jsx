@@ -1,9 +1,17 @@
+import CollapsibleSection from "../CollapsibleSection";
+
 function SystemInfo() {
   return (
     <section className="system-info">
-      <div className="system-info__block system-info__block--stats">
-        <h2 className="system-info__title">Показатели</h2>
-
+      <CollapsibleSection
+        title="Показатели"
+        className="system-info__block system-info__block--stats"
+        headerClassName="system-info__header"
+        titleClassName="system-info__title"
+        toggleClassName="system-info__toggle"
+        collapsedClassName="system-info__block--collapsed"
+        defaultOpen={false}
+      >
         <ul className="system-info__list">
           <li className="system-info__item">
             <span className="system-info__label">Обработано крышек:</span>
@@ -35,15 +43,7 @@ function SystemInfo() {
             <span className="system-info__value">—</span>
           </li>
         </ul>
-      </div>
-
-      <div className="system-info__block system-info__block--alerts">
-        <h2 className="system-info__title">Аварии и предупреждения</h2>
-
-        <div className="system-info__alerts">
-          <p className="system-info__empty">Нет активных аварий</p>
-        </div>
-      </div>
+      </CollapsibleSection>
     </section>
   );
 }

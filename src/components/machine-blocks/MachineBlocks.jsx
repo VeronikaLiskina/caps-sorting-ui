@@ -1,8 +1,14 @@
+import CollapsibleSection from "../CollapsibleSection";
 function MachineBlocks({ blocks }) {
   return (
-    <section className="machine-blocks">
-      <h2 className="machine-blocks__title">Блоки машины</h2>
-
+    <CollapsibleSection
+      title="Блоки машины"
+      className="machine-blocks"
+      headerClassName="machine-blocks__header"
+      titleClassName="machine-blocks__title"
+      toggleClassName="machine-blocks__toggle section-toggle"
+      collapsedClassName="machine-blocks--collapsed"
+    >
       <ul className="machine-blocks__list">
         {blocks.map((block) => (
           <li className="machine-blocks__item" key={block.id}>
@@ -11,8 +17,8 @@ function MachineBlocks({ blocks }) {
           </li>
         ))}
       </ul>
-    </section>
-  )
+    </CollapsibleSection>
+  );
 }
 
-export default MachineBlocks
+export default MachineBlocks;
