@@ -19,10 +19,10 @@
   gap: 28px;
 }
 .machine-control-page__content {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: 20px;
+  align-items: start;
 }
 
 @media (max-width: 991px) {
@@ -36,7 +36,8 @@
     gap: 16px;
   }
   .machine-control-page__content {
-    flex-direction: column;
-    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+}ch;
   }
 }

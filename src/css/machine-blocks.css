@@ -1,15 +1,12 @@
 .machine-blocks {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  padding: 10px;
+  padding: 20px;
   border: 1px solid #a9a9a9;
   border-radius: 12px;
   background: #ffffff;
-  flex: 1 1 100%;
+  height: 100%;
 }
 .machine-blocks__title {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   font-size: 22px;
   line-height: 1.2;
   font-weight: 500;
@@ -20,8 +17,8 @@
 .machine-blocks__item {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 10px;
-  padding: 10px 0;
+  gap: 20px;
+  padding: 18px 0;
   border-bottom: 1px solid #d6d6d6;
 }
 .machine-blocks__name {
@@ -30,6 +27,10 @@
 }
 .machine-blocks__status {
   font-size: 18px;
+  line-height: 1.3;
+  color: #555;
+  text-align: right;
+}8px;
   line-height: 1.3;
   color: #555;
   text-align: right;
