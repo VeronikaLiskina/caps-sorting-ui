@@ -1,13 +1,31 @@
 .machine-scheme {
-  padding: 10px;
-  border: 1px solid #a9a9a9;
-  border-radius: 12px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid #d7e2ef;
+  border-radius: 22px;
   background: #ffffff;
-  overflow-x: auto;
+  box-shadow:
+    0 14px 35px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  overflow: hidden;
 
   canvas {
     display: block;
     width: 100%;
     height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .machine-scheme {
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .machine-scheme {
+    border-radius: 14px;
   }
 }
